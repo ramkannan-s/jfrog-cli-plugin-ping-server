@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/jfrog/jfrog-cli-core/v2/plugins"
 	"github.com/jfrog/jfrog-cli-core/v2/plugins/components"
-	"/Users/ramkannans/git_repos/frog_cli_plugins/ping-server/commands"
+	"github.com/ramkannan-s/jfrog-cli-plugin-ping-server/commands"
 )
 
 func main() {
@@ -21,5 +21,9 @@ func getApp() components.App {
 
 func getCommands() []components.Command {
 	return []components.Command{
-		commands.GetPingCommand()}
+		//commands.GetPingCommand()
+		commands.PerformLocalFederatedCommand(),
+		commands.StartReplicationCommand(),
+		commands.ListRepositoriesCommand(),
+	}
 }
