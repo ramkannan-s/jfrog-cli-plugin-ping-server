@@ -25,5 +25,6 @@ func getCommands() []components.Command {
 		commands.PerformLocalFederatedCommand(),
 		commands.StartReplicationCommand(),
 		commands.ListRepositoriesCommand(),
+		commands.MoveRepositoryContents(),
 	}
 }

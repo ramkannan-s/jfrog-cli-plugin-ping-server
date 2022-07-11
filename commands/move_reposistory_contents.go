@@ -15,19 +15,19 @@ import (
 	clientutils "github.com/jfrog/jfrog-client-go/utils"
 )
 
-func StartReplicationCommand() components.Command {
+func MoveRepositoryContents() components.Command {
 	return components.Command{
-		Name:        "set-replication",
-		Description: "Configure push replication.",
-		Arguments:   getReplicationArguments(),
-		Aliases:     []string{"sr"},
+		Name:        "move-contents",
+		Description: "Move the repository contents.",
+		Arguments:   getRepoContentArguments(),
+		Aliases:     []string{"mrc"},
 		Action: func(c *components.Context) error {
-			return CreateReplication1(c)
+			return MoveRepoContents(c)
 		},
 	}
 }
 
-func getReplicationArguments() []components.Argument {
+func getRepoContentArguments() []components.Argument {
 	return []components.Argument{
 		{
 			Name:        "server-id",
@@ -36,35 +36,26 @@ func getReplicationArguments() []components.Argument {
 	}
 }
 
-func CreateReplication1(c *components.Context) error {
-	params := services.NewCreateReplicationParams()
+func MoveRepoContents(c *components.Context) error {
+	params := services.NewMoveCopyParams()
 	// Source replication repository.
-	params.RepoKey = "test-20-replicate"
-	params.CronExp = "0 0 12 * * ?"
-	params.Username = "admin"
-	params.Password = "@World10"
-	params.Url = "https://ramkannans-apac-sbx.dev.gcp.devopsacc.team/artifactory/apac-test-10"
-	params.Enabled = true
-	params.SocketTimeoutMillis = 15000
-	params.EnableEventReplication = true
-	params.SyncDeletes = true
-	params.SyncProperties = true
-	params.SyncStatistics = true
+	params.Pattern = "test-1-replicate"
+	params.Target = "test-1-replicate-tmp"
+	params.Recursive = true
+	params.Flat = false
 	//params.PathPrefix = "/path/to/repo"
 
-	rtDetails, err := getRtDetails1(c)
+	rtDetails, err := getRtDetails3(c)
 	servicesManager, err := utils.CreateServiceManager(rtDetails, -1, -1, false)
-	err = servicesManager.CreateReplication(params)
+	servicesManager.Move(params)
 	if err != nil {
-		print("some error occured")
-		print(params.RepoKey)
 		return nil
 	}
 	return nil
 }
 
 // Returns the Artifactory Details of the provided server-id, or the default one.
-func getRtDetails1(c *components.Context) (*config.ServerDetails, error) {
+func getRtDetails3(c *components.Context) (*config.ServerDetails, error) {
 	details, err := commands.GetConfig(c.Arguments[0], false)
 
 	if err != nil {
